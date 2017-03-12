@@ -49,15 +49,15 @@ def get_tracks(uri,list_tracks):
 
 '''
 def authorize(client_id):
-	client_id = ''
-	redirect_uri = 'https://medium.com/@miarenauly'
-	endpoint = "https://accounts.spotify.com/authorize/?client_id="+client_id+"&response_type=code&scope=playlist-modify-public playlist-modify-private&redirect_uri="+redirect_uri
-	r = requests.get(endpoint)
-	code = r.url
+    client_id = ''
+    redirect_uri = 'https://medium.com/@miarenauly'
+    endpoint = "https://accounts.spotify.com/authorize/?client_id="+client_id+"&response_type=code&scope=playlist-modify-public playlist-modify-private&redirect_uri="+redirect_uri
+    r = requests.get(endpoint)
+    code = r.url
 '''
 
 def get_token(code,client_id, client_secret):
-	code = ''
+    code = ''
     endpoint = 'https://accounts.spotify.com/api/token'
     body = {'grant_type': 'authorization_code',
             'code ': '',
@@ -74,34 +74,26 @@ def get_token(code,client_id, client_secret):
     return token
 
 def get_audio_feature(uri,token):
-	endpoint = "https://api.spotify.com/v1/audio-features/"+uri
-	headers = {'Authorization': 'Bearer '+ token}
+    endpoint = "https://api.spotify.com/v1/audio-features/"+uri
+    headers = {'Authorization': 'Bearer '+ token}
     r = requests.get(endpoint, headers=headers)
     content = r.text
     json_data = json.loads(content)
     i=0
     while i>=0:
     	#baru sampe sini
-        #try:
-            #track_uri = json_data[u'items'][i][u'uri']
-            #track_uri = track_uri.replace('spotify:track:','')
-            #list_tracks.append(track_uri)
-            #i+=1
-        #except IndexError:
-            #break
-    #print list_tracks
-
+        
 def main(str):
-	client_id = ''
-	client_secret = ''
-	artist = str
-	list_album = get_album(search_artist_uri(artist))
+    client_id = ''
+    client_secret = ''
+    artist = str
+    list_album = get_album(search_artist_uri(artist))
     list_tracks = []
-	for album in list_album:
-		get_tracks(album,list_tracks)
-	code = ''
-	token = get_token(code,client_id,client_secret)
-	for track in list_tracks:
-		get_audio_feature(track,token)
+    for album in list_album:
+        get_tracks(album,list_tracks)
+    code = ''
+    token = get_token(code,client_id,client_secret)
+    for track in list_tracks:
+        get_audio_feature(track,token)
 
 main()
