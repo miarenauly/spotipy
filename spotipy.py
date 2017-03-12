@@ -48,23 +48,25 @@ def get_tracks(uri,list_tracks):
     print list_tracks
 
 '''
-def authorize():
-	client_id = '5a84b178e67f4296823227c0d8e629fc'
+def authorize(client_id):
+	client_id = ''
 	redirect_uri = 'https://medium.com/@miarenauly'
 	endpoint = "https://accounts.spotify.com/authorize/?client_id="+client_id+"&response_type=code&scope=playlist-modify-public playlist-modify-private&redirect_uri="+redirect_uri
-    r = requests.get(endpoint)
-    code = r.url
+	r = requests.get(endpoint)
+	code = r.url
 '''
 
-def get_token(code):
-	code = 'AQA_Wzw3_TnQxQYB6hP09UaJArRy8q3ruY3D_lycOdRwXSzm5QlwsD_uBYoLuRFE3frZRsVjoJdh3u-CelsEtwLnJqxek879mECZZ89677VcoFZk8BPFZGs6wgIi1yv3kEMwIxkVfrctm85BbXupuW0YwupKZBnUMtuzUp1kWLyL_-Ir2miq9Ya5mbuP11FtBk4Du-SXWQsAslwXmKzJGzLS4YgIsmpZe75hlq9rCkL60Yni0mwgkUZ51he608U2Jg4M3QY'
+def get_token(code,client_id, client_secret):
+	code = ''
     endpoint = 'https://accounts.spotify.com/api/token'
     body = {'grant_type': 'authorization_code',
             'code ': '',
             'redirect_uri ': 'https://medium.com/@miarenauly',
-            'client_id': '5a84b178e67f4296823227c0d8e629fc',
-            'client_secret': '04065cabc4d24b9eb551c19b3383e298',}
+            'client_id': '',
+            'client_secret': '',}
     body['code']='code'
+    body['client_id']=client_id
+    body['client_secret']=client_secret
     r = requests.post(endpoint, data=body)
     content = r.text
     json_data = json.loads(content)
@@ -90,12 +92,16 @@ def get_audio_feature(uri,token):
     #print list_tracks
 
 def main(str):
+	client_id = ''
+	client_secret = ''
 	artist = str
 	list_album = get_album(search_artist_uri(artist))
     list_tracks = []
 	for album in list_album:
 		get_tracks(album,list_tracks)
 	code = ''
-	token = get_token(code)
+	token = get_token(code,client_id,client_secret)
 	for track in list_tracks:
 		get_audio_feature(track,token)
+
+main()
