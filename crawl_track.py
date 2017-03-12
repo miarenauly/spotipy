@@ -1,11 +1,14 @@
-import requests
+from __future__ import print_function    # (at top of module)
+from spotipy.oauth2 import SpotifyClientCredentials
 import json
 import spotipy
+import sys
+import requests
 
 def search_artist_uri(str):
-	#search artist
-    endpoint = "https://api.spotify.com/v1/search?query="+artist_name+"&limit=1&type=artist"
+    #search artist
     artist_name = str
+    endpoint = "https://api.spotify.com/v1/search?query="+artist_name+"&limit=1&type=artist"
     artist_name = artist_name.replace(' ','+')
     r = requests.get(endpoint)
     content = r.text
@@ -29,14 +32,15 @@ def get_album(uri):
             i+=1
         except IndexError:
             break
-    print list_album
+    return list_album
 
-def get_tracks(uri,list_tracks):
+def get_tracks(uri):
     endpoint = "https://api.spotify.com/v1/albums/"+uri+"/tracks"
     r = requests.get(endpoint)
     content = r.text
     json_data = json.loads(content)
     i=0
+    list_tracks = []
     while i>=0:
         try:
             track_uri = json_data[u'items'][i][u'uri']
@@ -45,7 +49,7 @@ def get_tracks(uri,list_tracks):
             i+=1
         except IndexError:
             break
-    print list_tracks
+    return list_tracks
 
 '''
 def authorize(client_id):
@@ -54,7 +58,7 @@ def authorize(client_id):
     endpoint = "https://accounts.spotify.com/authorize/?client_id="+client_id+"&response_type=code&scope=playlist-modify-public playlist-modify-private&redirect_uri="+redirect_uri
     r = requests.get(endpoint)
     code = r.url
-'''
+
 
 def get_token(code,client_id, client_secret):
     code = ''
@@ -72,28 +76,29 @@ def get_token(code,client_id, client_secret):
     json_data = json.loads(content)
     token = json_data['access_token']
     return token
+'''
 
-def get_audio_feature(uri,token):
-    endpoint = "https://api.spotify.com/v1/audio-features/"+uri
-    headers = {'Authorization': 'Bearer '+ token}
-    r = requests.get(endpoint, headers=headers)
-    content = r.text
-    json_data = json.loads(content)
-    i=0
-    while i>=0:
-    	#baru sampe sini
-        
-def main(str):
+def get_audio_feature(uri):
     client_id = ''
     client_secret = ''
+    
+    uri = (str(uri)).replace(',','')
+
+    client_credentials_manager = SpotifyClientCredentials(client_id,client_secret)
+    sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    sp.trace=True
+
+    features = sp.audio_features(uri)
+    print(json.dumps(features, indent=4))
+        
+def main(str):
     artist = str
     list_album = get_album(search_artist_uri(artist))
     list_tracks = []
     for album in list_album:
-        get_tracks(album,list_tracks)
-    code = ''
-    token = get_token(code,client_id,client_secret)
+        a_list = get_tracks(album)
+        list_tracks = a_list + list_tracks
     for track in list_tracks:
-        get_audio_feature(track,token)
+        get_audio_feature(track)
 
-main()
+main('coldplay')
