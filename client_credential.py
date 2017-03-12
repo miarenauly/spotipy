@@ -14,5 +14,5 @@ sp.trace=True
 
 
 features = sp.audio_features('4ytx0PQvxNbZwaplFx2Wd1')
-data = json.dumps(features)
-valence = data[0][0]['valence']
+a = json.loads(features)
+print a

@@ -81,13 +81,10 @@ def get_token(code,client_id, client_secret):
 def get_audio_feature(uri):
     client_id = ''
     client_secret = ''
-    
     uri = (str(uri)).replace(',','')
-
     client_credentials_manager = SpotifyClientCredentials(client_id,client_secret)
     sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
     sp.trace=True
-
     features = sp.audio_features(uri)
     print(json.dumps(features, indent=4))
         
