@@ -48,9 +48,9 @@ def scrap_lyric(page_url):
     html = BeautifulSoup(page.text, "html.parser")
     #remove script tags that they put in the middle of the lyrics
     [h.extract() for h in html('script')]
-    #at least Genius is nice and has a tag called 'lyrics'!
     lyrics = html.find("lyrics").get_text()
     lyrics = lyrics.encode('ascii','ignore')
+    lyrics = lyrics.replace("'","")
     return lyrics
 
 def alter_table():
@@ -63,7 +63,8 @@ def alter_table():
 
 def insert_data(track_id,lyrics):
     try:
-    	query = "update crawl_track set lyrics = '%s' where track_id = '%s'" %(lyrics, track_id)
+    	query = "update crawl_track set lyric = '%s' where track_id = '%s'" %(lyrics, track_id)
+        #print query
         cur.execute(query)
         conn.commit()
     except Error,e:
@@ -83,9 +84,11 @@ def main():
         track_artist = row[2]
         url = find_lyric_url(track_name,track_artist)
         print url
-#       try:
-        lyrics = scrap_lyric(url)
-        insert_data(track_id,lyrics)
-#        except requests.exceptions.MissingSchema:
-#            pass
+        if url == None:
+            pass
+        else:
+            #try:
+            lyrics = scrap_lyric(url)
+            insert_data(track_id,lyrics)
+
 main()
