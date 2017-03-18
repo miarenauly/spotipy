@@ -36,19 +36,19 @@ def tokenize(table):
 			return pos_tag
 
 def sentiment(pos_tag):
-	i=0
+    i=0
     while i>=0:
         try:
-        	jj_count = 0
-        	jj_neg = 0
-        	jj_pos = 0
+            jj_count = 0
+            jj_neg = 0
+            jj_pos = 0
             tag = pos_tag[i][1]
             word = pos_tag[i][0]
             if tag == 'JJ':
-            	jj_count += 1
-            	#analyze the neg or pos of the word
+                jj_count += 1
+                #analyze the neg or pos of the word
             else:
-            	pass
+                pass
             i+=1
         except IndexError:
             break
